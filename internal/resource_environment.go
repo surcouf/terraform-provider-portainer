@@ -69,6 +69,22 @@ func resourceEnvironment() *schema.Resource {
 				Optional: true,
 				Default:  true,
 			},
+			"tls_ca_cert": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "TLS CA certificate",
+			},
+			"tls_cert": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "TLS certificate",
+			},
+			"tls_key": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Sensitive:   true,
+				Description: "TLS private key",
+			},
 			"edge_key": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -110,6 +126,9 @@ func resourceEnvironmentCreate(d *schema.ResourceData, meta interface{}) error {
 	_ = writer.WriteField("TLS", strconv.FormatBool(d.Get("tls_enabled").(bool)))
 	_ = writer.WriteField("TLSSkipVerify", strconv.FormatBool(d.Get("tls_skip_verify").(bool)))
 	_ = writer.WriteField("TLSSkipClientVerify", strconv.FormatBool(d.Get("tls_skip_client_verify").(bool)))
+	_ = writer.WriteField("TLSCACert", d.Get("tls_ca_cert").(string))
+	_ = writer.WriteField("TLSCert", d.Get("tls_cert").(string))
+	_ = writer.WriteField("TLSKey", d.Get("tls_key").(string))
 
 	if v, ok := d.GetOk("tag_ids"); ok {
 		tagIds := v.([]interface{})
