@@ -1,0 +1,37 @@
+
+variables:
+  GO_VERSION: "1.23"
+  GOLANGCI_LINT_VERSION: "v1.64.8"
+  GOPATH: $CI_PROJECT_DIR/.go
+  GO_BIN_DIR: bin
+
+image: $CI_REGISTRY/golang:$GO_VERSION
+
+stages:
+  - test
+  - build
+  - deploy
+
+format:
+  stage: test
+  script:
+    - go fmt $(go list ./... | grep -v /vendor/)
+    - go vet $(go list ./... | grep -v /vendor/)
+    - go test -race $(go list ./... | grep -v /vendor/)
+
+compile:
+  stage: build
+  script:
+    - mkdir -p $CI_PROJECT_NAME
+    - go build -o $CI_PROJECT_NAME ./...
+  artifacts:
+    paths:
+      - $CI_PROJECT_NAME
+
+deploy:
+  stage: deploy
+  script: echo "Define your deployment script!"
+  environment: production
+
+tags:
+  - packer
